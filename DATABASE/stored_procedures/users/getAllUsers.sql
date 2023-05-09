@@ -1,0 +1,6 @@
+CREATE OR ALTER PROCEDURE getAllUsers
+AS
+BEGIN
+
+SELECT * FROM users WHERE isDeleted=0
+END
