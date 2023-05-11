@@ -1,4 +1,4 @@
-CREATE OR ALTER  PROCEDURE getAllProducts
+CREATE PROCEDURE getAllProducts
 AS
 BEGIN
 SELECT * FROM products
