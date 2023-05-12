@@ -60,7 +60,7 @@ export const addProduct =async(req:Request, res:Response)=>{
 export const getAllProducts=async (req:Request, res:Response)=>{
   try{
      let pool=await mssql.connect(sqlConfig);
-     let product=await(await pool.request().execute('getAllProducts')).recordsets
+     let product=await(await pool.request().execute('getAllProducts')).recordset
      return res.status(200).json(product)
   }
   catch(error:any){

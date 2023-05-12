@@ -7,7 +7,7 @@ const productRouter=Router()
 productRouter.get('/:id',getProduct)
 productRouter.post("",addProduct)
 productRouter.get("",getAllProducts)
-productRouter.post("/:id",updateProduct)
+productRouter.put("/:id",updateProduct)
 productRouter.delete("/:id",deleteProduct)
 
 export default productRouter
