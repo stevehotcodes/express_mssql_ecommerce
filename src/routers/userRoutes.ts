@@ -1,13 +1,16 @@
 import { Router } from "express";
-import { addUser, getAllUsers, getUserById, getUserByEmail, updateUser, deleteUser } from "../controllers/userController";
+import { addUser, getAllUsers, getUserById, getUserByEmail, updateUser, deleteUser, signIn } from "../controllers/userController";
+import { accountRequired, adminPrivilage } from "../middlewares/auth";
+
 
 const userRoutes= Router()
 
 userRoutes.post('', addUser)
-userRoutes.get('', getAllUsers)
-userRoutes.get('/u/:id', getUserById)
-userRoutes.get('/u', getUserByEmail)
-userRoutes.put('/u/:id', updateUser)
-userRoutes.delete('/u/:id',deleteUser)
+userRoutes.post('/signin', signIn)
+userRoutes.get('', adminPrivilage, getAllUsers)
+userRoutes.get('/u/:id', accountRequired, getUserById)
+userRoutes.get('/u', accountRequired, getUserByEmail)
+userRoutes.put('/u/:id', accountRequired, updateUser)
+userRoutes.delete('/u/:id', accountRequired, deleteUser)
 
 export default userRoutes
