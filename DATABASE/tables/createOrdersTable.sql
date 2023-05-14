@@ -1,7 +1,7 @@
 CREATE TABLE orders(
 id VARCHAR(200) PRIMARY KEY,
 orderStatus VARCHAR(200) DEFAULT 'processing',
-orderDate DATE ,
+orderDate GETDATE() ,
 userID  VARCHAR(200) FOREIGN KEY REFERENCES users(id)
 )
 
