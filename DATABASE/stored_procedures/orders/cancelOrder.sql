@@ -4,6 +4,6 @@ CREATE OR ALTER PROCEDURE cancelOrderById(
 AS
 BEGIN
 SELECT * FROM orders WHERE id=@id
-UPDATE orders SET orderStatus= 'cancelled'
+UPDATE orders SET orderStatus= 'canceled'
 END
  

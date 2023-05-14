@@ -4,8 +4,8 @@ CREATE OR ALTER PROCEDURE createOrder(
 
 AS 
 BEGIN 
-INSERT INTO orders (id,userID,orderDate)
-VALUES (@id, @userID,@orderDate)
+INSERT INTO orders (id,userID)
+VALUES (@id, @userID)
 UPDATE orders SET  orderStatus='processing'
 END
  

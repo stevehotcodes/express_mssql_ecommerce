@@ -2,5 +2,5 @@ CREATE OR ALTER PROCEDURE getAnOrderByStatus(@id VARCHAR (200), @orderStatus VAR
 AS
 BEGIN
 SELECT * FROM orders WHERE id=@id AND orderStatus=@orderStatus
-SELECT * FROM sales 
+
 END
