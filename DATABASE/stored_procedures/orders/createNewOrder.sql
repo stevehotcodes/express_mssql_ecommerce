@@ -6,6 +6,6 @@ AS
 BEGIN 
 INSERT INTO orders (id,userID)
 VALUES (@id, @userID)
-UPDATE orders SET  orderStatus='processing'
+
 END
  
