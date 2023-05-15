@@ -41,3 +41,10 @@ export interface IdecodedData{
     email: string;
     role: 'user' | 'admin'
 }
+
+export interface IcartItem {
+    id:string
+    userID:string
+    productID:string
+    quantity:number
+}
