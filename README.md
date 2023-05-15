@@ -22,6 +22,8 @@ DB_PWD
 DB_NAME
 DB_SERVER
 SECRET_KEY
+NODEMAILER_EMAIL
+NODEMAILER_PASSWORD
 ```
 
 - Run `node DATABASE/setupdb` to setup the database
