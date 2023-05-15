@@ -201,7 +201,8 @@ export const resetPassword = async (req:Request, res:Response) => {
         }
 
         const decodedData = jwt.verify(reset, process.env.SECRET_KEY as string) as IresetPasswordData
-        const {id, password} = decodedData
+        let {id, password} = decodedData
+        password = await bcrypt.hash(password, 10)
         await db.exec('resetUserPassword', {id, password})
         return res.status(201).json({message:'Password reset successful.'})
 
