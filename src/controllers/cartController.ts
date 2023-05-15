@@ -1,8 +1,6 @@
-import { Request, RequestHandler, Response } from "express";
+import { Response } from "express";
 import {v4 as uid} from 'uuid'
-import bcrypt from 'bcrypt'
 import DatabaseHelper from "../helpers/databaseHelper";
-import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
 import path from 'path';
 import { IcartItem, IrequestInfo } from "../compiler/types";
