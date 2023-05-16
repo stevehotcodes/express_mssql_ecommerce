@@ -20,7 +20,7 @@ export  const getProduct= async (req:Request, res:Response)=>{
     //creating server connection 
     const pool = await mssql.connect(sqlConfig)
     const{id}=req.params
-    console.log(id);
+    // console.log(id);
     
     //make a request
     let product = (await(await pool.request())
@@ -42,7 +42,7 @@ export const addProduct =async(req:Request, res:Response)=>{
    try{
       let pool= await mssql.connect(sqlConfig)
        let id= uid()
-       console.log(id)
+      //  console.log(id)
     const {productName,productDescription,price}=req.body;
     await((await pool.request())
     .input("id", id)
@@ -61,6 +61,7 @@ export const getAllProducts=async (req:Request, res:Response)=>{
   try{
      let pool=await mssql.connect(sqlConfig);
      let product=await(await pool.request().execute('getAllProducts')).recordset
+    //  console.log(product)
      return res.status(200).json(product)
   }
   catch(error:any){
