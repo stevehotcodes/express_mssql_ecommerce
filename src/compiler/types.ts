@@ -41,10 +41,18 @@ export interface IdecodedData{
     email: string;
     role: 'user' | 'admin'
 }
-
-export interface IcartItem {
+export interface Iitem {
     id:string
-    userID:string
     productID:string
     quantity:number
+}
+
+export interface IcartItem  extends Iitem{
+
+    userID:string
+    
+}
+export interface IsalesItem extends Iitem{
+    price:number
+    orderID:string
 }
