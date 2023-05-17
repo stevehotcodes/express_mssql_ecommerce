@@ -107,7 +107,7 @@ export const updateUser = async (req:IupdateUserRequest, res:Response)=>{
         }
 
         db.exec('updateUser', {id, firstname, lastname, email, password})
-        return res.status(200).json({message:`User ${firstname} <${email}> Updated Successfully`})
+        return res.status(204).json({message:`User ${firstname} <${email}> Updated Successfully`})
     } catch (error:any) {
         return res.status(500).json(error.message) //server side error
     }
