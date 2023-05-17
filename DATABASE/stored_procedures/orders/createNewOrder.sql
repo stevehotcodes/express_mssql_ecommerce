@@ -1,6 +1,6 @@
 
 CREATE OR ALTER PROCEDURE createOrder(
-@id VARCHAR(200), @userID VARCHAR(200),@orderDate DATE)
+@id VARCHAR(200), @userID VARCHAR(200))
 
 AS 
 BEGIN 
