@@ -47,6 +47,7 @@ export interface Iitem {
     quantity:number
 }
 
+
 export interface IcartItem  extends Iitem{
 
     userID:string
@@ -55,4 +56,18 @@ export interface IcartItem  extends Iitem{
 export interface IsalesItem extends Iitem{
     price:number
     orderID:string
+
+
+export interface nodemailerMessageOptions {
+    from:string
+    to:string
+    subject?:string
+    text?:string
+    html?:string
+}
+
+export interface IresetPasswordData {
+    id:string
+    password:string
+
 }
