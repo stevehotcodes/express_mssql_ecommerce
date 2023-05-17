@@ -3,6 +3,7 @@ import express, {json} from 'express'
 import userRoutes from './routers/userRoutes'
 import productRouter from './routes/productRoutes'
 import cartRoutes from './routers/cartRoutes'
+import orderRoutes from './routes/orderRoutes'
 
 // API DOCS Imports
 import swaggerUI from 'swagger-ui-express'
@@ -22,5 +23,7 @@ app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDocs))
 app.use('/users', userRoutes)
 app.use('/products',productRouter)
 app.use('/cart', cartRoutes)
+app.use('/order',orderRoutes)
 
 export default app
+
