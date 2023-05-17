@@ -1,0 +1,267 @@
+openapi: 3.0.0
+info:
+  title: Express MSSQL Ecommerce REST API docs
+  description: API docs to help you understand, test, and or consume the app API
+  version: 0.1
+
+  servers:
+    -url: http://localhost:4000/
+    description: Local Development Server
+
+schemes: [http, https]
+
+paths:
+  /users:
+    get:
+      security:
+        - tokenAuth: []
+      tags:
+        - USERS
+      summary: Gets all users
+      description: Returns an array of all the users that are in the DB
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/definations/Users'
+        401:
+          $ref: '#responses/401Error'
+        500:
+          $ref: '#/responses/500Error'
+    post:
+      tags:
+        - USERS
+      summary: Sign Up
+      description: Signs up a user with the info submitted
+      requestBody:
+        required: true
+        content:
+          application/json:
+            $ref: '#/examples/editableUserInfoExample'
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        201:
+          description: SUCCESS
+          content:
+            application/json:
+              $ref: '#/examples/signupSuccessMessageExample'
+              schema:
+                $ref: '#/components/responseSchemas/MessageResponse'
+        500:
+          $ref: '#/responses/500Error'
+  /users/signin:
+    post:
+      tags:
+        - USERS
+      summary: Sign In
+      description: Signs in a user and returns an access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example: {email: 'email@example.com',password: '@1strongPass'}
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              $ref: '#/examples/signinResponseExample'
+              schema:
+                $ref: '#/components/responseSchemas/SignInResponse'
+        404:
+          $ref: '#responses/404Error'
+        500:
+          $ref: '#/responses/500Error'
+
+  /users/u/{id}:
+    put:
+      tags:
+        - USERS
+      summary: Update User
+      description: Updates user information
+      security:
+        - tokenAuth: []
+      parameters:
+        - $ref: '#/parameters/id'
+          description: ID of the user being updated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            $ref: '#/examples/editableUserInfoExample'
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        204:
+          description: SUCCESS
+          content:
+            application/json:
+              $ref: '#/examples/updateUserResponseExample'
+              schema:
+                $ref: '#/components/responseSchemas/MessageResponse'
+        401:
+          $ref: '#responses/401Error'
+        404:
+          $ref: '#responses/404Error'
+        500:
+          $ref: '#/responses/500Error'
+    get:
+      tags:
+        - USERS
+      summary: Get User by ID
+      description: Returns the user with specified ID
+      security:
+        - tokenAuth: []
+      parameters:
+        - $ref: '#/parameters/id'
+          description: ID of the user being queried
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              $ref: '#/examples/userInfoExample'
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          $ref: '#responses/401Error'
+        404:
+          $ref: '#responses/404Error'
+        500:
+          $ref: '#/responses/500Error'
+
+  /users/u:
+    get:
+      tags:
+        - USERS
+      summary: Get User by email
+      description: Returns the user with specified email
+      security:
+        - tokenAuth: []
+      parameters:
+        - $ref: '#/parameters/email'
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              $ref: '#/examples/userInfoExample'
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          $ref: '#responses/401Error'
+        404:
+          $ref: '#responses/404Error'
+        500:
+          $ref: '#/responses/500Error'
+
+definations:
+  Users:
+    type: array
+    items:
+      $ref: '#/components/schemas/User'
+
+parameters:
+  token:
+    name: token
+    in: header
+    description: A JWT user token
+    required: true
+    type: string
+  id:
+    name: id
+    in: path
+    schema:
+      type: string
+    required: true
+  email:
+    name: email
+    in: path
+    schema:
+      type: string
+    required: true
+    description: User email addresss
+
+components:
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: token
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        password:
+          type: string
+  responseSchemas:
+    SignInResponse:
+      type: object
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+          email:
+            type: string
+          token:
+            type: string
+    MessageResponse:
+      type: object
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+
+responses:
+  500Error:
+    description: SERVER ERROR
+    content:
+      application/json:
+        schema:
+          type: string
+        example: 'An error occured'
+  401Error:
+    description: UNAUTHORIZED
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/responseSchemas/MessageResponse'
+        example: {message: 'Unauthorized'}
+  404Error:
+    description: Not Found
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/responseSchemas/MessageResponse'
+        example: {message: 'Not Found'}
+
+
+examples:
+  signinResponseExample:
+    example: {message: 'Signin successful', email: 'email@example.com', token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg4YTUzN2FhLWExYjItNGY5MC04OWI5LTRmMTcwZGRlNzNiZSIsIm5hbWUiOiJKb3NodWEgT25kaWVraSIsImVtYWlsIjoiYWRtaW5AYXBwLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY4NDI2NzY1OSwiZXhwIjoxNjg0MzEwODU5fQ.CQc98eMQ9loyzeu9kGsXprdzT0b8UMFq35iV9nl65fc'}
+  editableUserInfoExample:
+    example: {firstname: 'Fname',lastname: 'Lname',email: 'email@example.com',password: '@1strongPass'}
+  userInfoExample:
+    example: {id: '1c3hu34', firstname: 'Fname',lastname: 'Lname',email: 'email@example.com', role: 'user',password: '@1strongPass'}
+  signupSuccessMessageExample:
+    example: {message: 'User ${firstname} <${email}> has been registered successfully. Your ID is ${id}'}
+  updateUserResponseExample:
+    example: {message: 'User ${firstname} <${email}> Updated Successfully'}
