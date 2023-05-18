@@ -23,7 +23,7 @@ app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDocs))
 app.use('/users', userRoutes)
 app.use('/products',productRouter)
 app.use('/cart', cartRoutes)
-app.use('/order',orderRoutes)
+app.use('/orders',orderRoutes)
 
 export default app
 
