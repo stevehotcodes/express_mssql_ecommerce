@@ -30,4 +30,4 @@ NODEMAILER_PASSWORD
 
 - Run `npm run dev` to start up the development server
 
-- Go to http://localhost:4000/docs for REST API docs
+- Go to /docs for REST API docs
