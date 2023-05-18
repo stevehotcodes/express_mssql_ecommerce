@@ -15,6 +15,6 @@ userRoutes.put('/u/:id', validateUser, accountRequired, updateUser)
 userRoutes.delete('/u/:id', accountRequired, deleteUser)
 
 userRoutes.post('/forgot-password', forgotPassword)
-userRoutes.patch('/reset-password', resetPassword)
+userRoutes.get('/reset-password', resetPassword)
 
 export default userRoutes
