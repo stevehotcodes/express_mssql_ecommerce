@@ -206,7 +206,6 @@ paths:
   /users/forgot-password:
     post:
       tags:
-        - USERS
         - Password recovery
       summary: Send Forgot Password Email
       description: Sends an email with a link to reset account password
@@ -224,7 +223,6 @@ paths:
   /users/reset-password:
     patch:
       tags:
-        - USERS
         - Password recovery
       summary: Resets password
       description: Resets user password to the secure password sent in email. Reset link in email contains this endpoint including the reset token as query
@@ -354,6 +352,126 @@ paths:
         500:
           $ref: '#/x-responses/500Error'
 
+  /cart:
+    get:
+      tags:
+        - CART
+      summary: Get items in your cart
+      description: Returns an array of all items in the cart of signed in user.
+      security:
+        - tokenAuth: []
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/x-definitions/CartItems'
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+    post:
+      tags:
+        - CART
+      summary: Add an item to your cart
+      description: Adds item and its quantity to your cart. If item already in cart, the quantity is updated
+      security:
+        - tokenAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example: {productID: MacBook Pro M2 16", quantity: 3}
+      responses:
+        201:
+          description: SUCCESS
+          content:
+            application/json:
+              example: {message: cart item added}
+        204:
+          description: UPDATE SUCCESS
+          content:
+            application/json:
+              example: {message: cart item updated}
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+    delete:
+      tags:
+        - CART
+      summary: Clear cart
+      description: Removes all items from your cart
+      security:
+        - tokenAuth: []
+      responses:
+        204:
+          description: DELETED
+          content:
+            application/json:
+              example: {message: 'Your cart has been cleared.'}
+        401:
+          $ref: '#/x-responses/401Error'
+        500:
+          $ref: '#/x-responses/500Error'
+
+  /cart/{itemID}:
+    patch:
+      tags:
+        - CART
+      summary: Update cart item quantity
+      description: Updates the quantity of a cart item
+      security:
+        - tokenAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example: {quantity: 6}
+      responses:
+        204:
+          description: UPDATE SUCCESS
+          content:
+            application/json:
+              example: {message: cart item updated}
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+    delete:
+      tags:
+        - CART
+      summary: Delete cart item
+      description: Removes an item from your cart using the item id
+      parameters:
+        - name: itemID
+          in: path
+          schema:
+            type: string
+          description: cart item ID
+          required: true
+      security:
+        - tokenAuth: []
+      responses:
+        204:
+          description: DELETED
+          content:
+            application/json:
+              example: {message: 'Your cart has been cleared.'}
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+          
 x-definitions:
   Users:
     type: array
@@ -363,6 +481,10 @@ x-definitions:
     type: array
     items:
       $ref: '#/components/schemas/Product'
+  CartItems:
+    type: array
+    items:
+      $ref: '#/components/schemas/CartItem'
 
 x-parameters:
   token:
@@ -419,6 +541,18 @@ components:
           type: string
         price:
           type: number
+    CartItem:
+      type: object
+      properties:
+        id:
+          type: string
+        productID:
+          type: string
+        quantity:
+          type: integer
+        userID:
+          type: string
+
   x-responseSchemas:
     SignInResponse:
       type: object
