@@ -220,7 +220,7 @@ paths:
           $ref: '#/x-responses/500Error'
 
   /users/reset-password:
-    patch:
+    get:
       tags:
         - Password recovery
       summary: Resets password
@@ -383,7 +383,17 @@ paths:
         required: true
         content:
           application/json:
-            example: {productID: MacBook Pro M2 16", quantity: 3}
+            schema:
+              type: object
+              properties:
+                productID:
+                  type: string
+                quantity:
+                  type: number
+              required:
+                - productID
+                - quantity
+            example: {productID: 73pr2duct1613eu4, quantity: 3}
       responses:
         201:
           description: SUCCESS
@@ -431,6 +441,11 @@ paths:
         required: true
         content:
           application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
             example: {quantity: 6}
       responses:
         204:
@@ -470,6 +485,115 @@ paths:
           $ref: '#/x-responses/404Error'
         500:
           $ref: '#/x-responses/500Error'
+  
+  /orders:
+    post:
+      summary: Make an order
+      description: Makes an order based on the cart items
+      tags:
+        - ORDERS
+      security:
+        - tokenAuth: []
+      responses:
+        201:
+          description: CREATION SUCCESS
+          content:
+            application/json:
+              example: { message: order created successfully, orderTotal: 33000, itemsCount:7, orderID: 34h4gy556gy6}
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+    get:
+      summary: Get orders
+      description: Returns all orders for the signed in user
+      tags:
+        - ORDERS
+      security:
+        - tokenAuth: []
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/x-definitions/Orders'
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+  
+  /orders/{id}:
+    get:
+      summary: Get order info
+      description: Returns  order info
+      tags:
+        - ORDERS
+      security:
+        - tokenAuth: []
+      parameters:
+        - $ref: '#/x-parameters/id'
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              example: {id: 234hbh43v, orderStatus: 'processing', orderDate: 25/04/2021, userID: 34yug4w, items: [{id: 2342bd, productID: wd4h4ht45, quantity: 3, orderID: 4riy34, price: 8374276}, {id: we2342bd, productID: 3wd4sh4ht45, quantity: 1, orderID: 4riy34, price: 4276}]}
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+
+  /orders/cancel/{id}:
+    patch:
+      summary: Cancel order
+      description: An admin can cancel an order or a user can cancel their order
+      tags:
+        - ORDERS
+      security:
+        - tokenAuth: []
+      parameters:
+        - $ref: '#/x-parameters/id'
+      responses:
+        204:
+          description: CANCEL SUCCESS
+          content:
+            application/json:
+              example: { message: order canceled}
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+
+  /orders/all:
+    get:
+      summary: Get all orders
+      description: Returns all orders in the DB. Admin only
+      tags:
+        - ORDERS
+      security:
+        - tokenAuth: []
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/x-definitions/Orders'
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'  
           
 x-definitions:
   Users:
@@ -484,14 +608,18 @@ x-definitions:
     type: array
     items:
       $ref: '#/components/schemas/CartItem'
+  Orders:
+    type: array
+    items:
+      $ref: '#/components/schemas/Order'
 
 x-parameters:
-  token:
-    name: token
-    in: header
-    description: A JWT user token
-    required: true
-    type: string
+  # token:
+  #   name: token
+  #   in: header
+  #   description: A JWT user token
+  #   required: true
+  #   type: string
   id:
     name: id
     in: path
@@ -551,6 +679,18 @@ components:
           type: integer
         userID:
           type: string
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        orderStatus:
+          type: string
+        orderDate:
+          type: string
+        userID:
+          type: string
+        
 
   x-responseSchemas:
     SignInResponse:

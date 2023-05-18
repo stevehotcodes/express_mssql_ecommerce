@@ -56,7 +56,7 @@ export interface IcartItem  extends Iitem{
 export interface IsalesItem extends Iitem{
     price:number
     orderID:string
-
+}
 
 export interface nodemailerMessageOptions {
     from:string
