@@ -15,7 +15,7 @@ node project
 - `npm install`
 
 2. Setup DB
-- Create a **.env** file and add these environment variables. Use a development DB to avoid your valuable data being overwritten.
+- Create a **.env** file and add these environment variables. Use a development DB to avoid your valuable data being overwritten. APPHOST and PORT are optional for a local server. Hosted, these variables will help send the correct links in emails
 ```
 DB_USER
 DB_PWD
@@ -24,6 +24,8 @@ DB_SERVER
 SECRET_KEY
 NODEMAILER_EMAIL
 NODEMAILER_PASSWORD
+APPHOST
+PORT
 ```
 
 - Run `node DATABASE/setupdb` to setup the database
