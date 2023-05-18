@@ -30,7 +30,7 @@ export  const getProduct= async (req:Request, res:Response)=>{
     if(product){
         return res.status(200).json(product)
     }
-    return  res.status(500).json("The product is not available")
+    return  res.status(404).json({message: "The product is not available"})
   }
   catch(error:any){
     return  res.status(500).json(error.message)
@@ -50,7 +50,7 @@ export const addProduct =async(req:Request, res:Response)=>{
     .input('productDescription', productDescription)
     .input('price', price)
     .execute("addProduct"))
-    return res.status(200).json({message:"product added successfully"})
+    return res.status(201).json({message:"product added successfully"})
    }
    catch(error:any){
     return res.status(500).json(error.message)
@@ -65,7 +65,7 @@ export const getAllProducts=async (req:Request, res:Response)=>{
      return res.status(200).json(product)
   }
   catch(error:any){
-    return res.status(404).json(error.message)
+    return res.status(500).json(error.message)
   }
   
 }
@@ -89,11 +89,11 @@ export const updateProduct= async(req:Request, res:Response)=>{
         .input("price", price)
         .execute("updateProduct")
     )
-    return res.status(200).json({message:"the product's details updated successfully"})
+    return res.status(201).json({message:"the product's details updated successfully"})
 
   }
   catch(error:any){
-      return res.status(404).json(error.message)    
+      return res.status(500).json(error.message)    
 
   }
 }
@@ -115,7 +115,7 @@ export const deleteProduct= async(req:Request, res:Response)=>{
       input("id",id)
       .execute("deleteProduct")
       )
-      return res.status(200).json({message:"Product deleted successfully"})
+      return res.status(204).json({message:"Product deleted successfully"})
 
     
    }

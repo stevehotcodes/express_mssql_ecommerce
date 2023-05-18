@@ -126,7 +126,7 @@ export const deleteUser = async (req:IrequestInfo, res:Response)=>{
            }
 
            await db.exec('deleteUser', {'id':id})
-           return res.status(200).json({message:`User Deleted`})
+           return res.status(204).json({message:`User Deleted`})
     } catch (error:any) {
         return res.status(500).json(error.message)  // server side error
     }

@@ -30,4 +30,4 @@ NODEMAILER_PASSWORD
 
 - Run `npm run dev` to start up the development server
 
-- Use a tool like POSTMAN to consume the REST API
+- Go to http://localhost:4000/docs for REST API docs

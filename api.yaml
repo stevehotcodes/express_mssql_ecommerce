@@ -2,13 +2,10 @@ openapi: 3.0.0
 info:
   title: Express MSSQL Ecommerce REST API docs
   description: API docs to help you understand, test, and or consume the app API
-  version: 0.1
+  version: '0.1'
 
-  servers:
-    -url: http://localhost:4000/
-    description: Local Development Server
-
-schemes: [http, https]
+servers:
+  - url: /
 
 paths:
   /users:
@@ -25,11 +22,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definations/Users'
+                $ref: '#/x-definitions/Users'
         401:
-          $ref: '#responses/401Error'
+          $ref: '#/x-responses/401Error'
         500:
-          $ref: '#/responses/500Error'
+          $ref: '#/x-responses/500Error'
     post:
       tags:
         - USERS
@@ -39,7 +36,10 @@ paths:
         required: true
         content:
           application/json:
-            $ref: '#/examples/editableUserInfoExample'
+            examples:
+              application/json:
+                summary:
+                $ref: '#/x-examples/editableUserInfoExample'
             schema:
               $ref: '#/components/schemas/User'
       responses:
@@ -47,11 +47,16 @@ paths:
           description: SUCCESS
           content:
             application/json:
-              $ref: '#/examples/signupSuccessMessageExample'
+              examples:
+                application/json:
+                  summary: 
+                  $ref: '#/x-examples/signupSuccessMessageExample'
               schema:
-                $ref: '#/components/responseSchemas/MessageResponse'
+                $ref: '#/components/x-responseSchemas/MessageResponse'
+        400:
+          $ref: '#/x-responses/400Error'
         500:
-          $ref: '#/responses/500Error'
+          $ref: '#/x-responses/500Error'
   /users/signin:
     post:
       tags:
@@ -70,13 +75,16 @@ paths:
           description: SUCCESS
           content:
             application/json:
-              $ref: '#/examples/signinResponseExample'
               schema:
-                $ref: '#/components/responseSchemas/SignInResponse'
+                $ref: '#/components/x-responseSchemas/SignInResponse'
+              examples:
+                application/json:
+                  summary: sign in response example
+                  $ref: '#/x-examples/signinResponseExample'
         404:
-          $ref: '#responses/404Error'
+          $ref: '#/x-responses/404Error'
         500:
-          $ref: '#/responses/500Error'
+          $ref: '#/x-responses/500Error'
 
   /users/u/{id}:
     put:
@@ -87,13 +95,16 @@ paths:
       security:
         - tokenAuth: []
       parameters:
-        - $ref: '#/parameters/id'
+        - $ref: '#/x-parameters/id'
           description: ID of the user being updated
       requestBody:
         required: true
         content:
           application/json:
-            $ref: '#/examples/editableUserInfoExample'
+            examples:
+              application/json:
+                summary: 
+                $ref: '#/x-examples/editableUserInfoExample'
             schema:
               $ref: '#/components/schemas/User'
       responses:
@@ -101,15 +112,18 @@ paths:
           description: SUCCESS
           content:
             application/json:
-              $ref: '#/examples/updateUserResponseExample'
+              examples:
+                application/json:
+                  summary: 
+                  $ref: '#/x-examples/updateUserResponseExample'
               schema:
-                $ref: '#/components/responseSchemas/MessageResponse'
+                $ref: '#/components/x-responseSchemas/MessageResponse'
         401:
-          $ref: '#responses/401Error'
+          $ref: '#/x-responses/401Error'
         404:
-          $ref: '#responses/404Error'
+          $ref: '#/x-responses/404Error'
         500:
-          $ref: '#/responses/500Error'
+          $ref: '#/x-responses/500Error'
     get:
       tags:
         - USERS
@@ -118,22 +132,46 @@ paths:
       security:
         - tokenAuth: []
       parameters:
-        - $ref: '#/parameters/id'
-          description: ID of the user being queried
+        - $ref: '#/x-parameters/id'
       responses:
         200:
           description: SUCCESS
           content:
             application/json:
-              $ref: '#/examples/userInfoExample'
+              examples:
+                application/json:
+                  summary: 
+                  $ref: '#/x-examples/userInfoExample'
               schema:
                 $ref: '#/components/schemas/User'
         401:
-          $ref: '#responses/401Error'
+          $ref: '#/x-responses/401Error'
         404:
-          $ref: '#responses/404Error'
+          $ref: '#/x-responses/404Error'
         500:
-          $ref: '#/responses/500Error'
+          $ref: '#/x-responses/500Error'
+
+    delete:
+      tags:
+        - USERS
+      summary: Delete a User
+      description: A user can delete their account or an admin can delete the user using this endpoint
+      security:
+        - tokenAuth: []
+      parameters:
+        - $ref: '#/x-parameters/id'
+      responses:
+        204:
+          description: Deleted Successfully
+          content:
+            application/json:
+              example: {message: User Deleted}
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
 
   /users/u:
     get:
@@ -144,29 +182,310 @@ paths:
       security:
         - tokenAuth: []
       parameters:
-        - $ref: '#/parameters/email'
+        - $ref: '#/x-parameters/email'
       responses:
         200:
           description: SUCCESS
           content:
             application/json:
-              $ref: '#/examples/userInfoExample'
+              examples:
+                application/json:
+                  summary: 
+                  $ref: '#/x-examples/userInfoExample'
               schema:
                 $ref: '#/components/schemas/User'
         401:
-          $ref: '#responses/401Error'
+          $ref: '#/x-responses/401Error'
         404:
-          $ref: '#responses/404Error'
+          $ref: '#/x-responses/404Error'
         500:
-          $ref: '#/responses/500Error'
+          $ref: '#/x-responses/500Error'
 
-definations:
+
+  /users/forgot-password:
+    post:
+      tags:
+        - Password recovery
+      summary: Send Forgot Password Email
+      description: Sends an email with a link to reset account password
+      parameters:
+        - $ref: '#/x-parameters/email'
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              example: { message: "If a user exists with email: <${email}> a reset link will be sent to the email provided. Check spam folder in case you don't see any email."}
+        500:
+          $ref: '#/x-responses/500Error'
+
+  /users/reset-password:
+    patch:
+      tags:
+        - Password recovery
+      summary: Resets password
+      description: Resets user password to the secure password sent in email. Reset link in email contains this endpoint including the reset token as query
+      parameters:
+        - name: reset
+          description: A reset token
+          in: query
+          schema:
+            type: string
+          required: true
+      responses:
+        201:
+          description: SUCCESS
+          content:
+            application/json:
+              example: {message: Password reset successful.}
+        500:
+          $ref: '#/x-responses/500Error'
+
+
+  /products:
+    post:
+      summary: Add a product
+      description: Admin can add a product to DB
+      tags:
+        - PRODUCTS
+      security:
+        - tokenAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+            example: { productName: Tshirt, productDescription: Yellow Tshirt, price: 2000}
+      responses:
+        201:
+          description: SUCCESS
+          content:
+            application/json:
+              example: {message: product added successfully}
+        401:
+          $ref: '#/x-responses/401Error'
+        500:
+          $ref: '#/x-responses/500Error'
+      
+    get:
+      summary: Get all products
+      description: Returns an array of all products
+      tags:
+        - PRODUCTS
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/x-definitions/Products'
+        500:
+          $ref: '#/x-responses/500Error'
+  /products/{id}:
+    get:
+      tags:
+        - PRODUCTS
+      summary: Get a specific product
+      description: Returns a product with the specified ID
+      parameters:
+        - $ref: '#/x-parameters/id'
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+    put:
+      tags:
+        - PRODUCTS
+      summary: Update a product
+      description: Updates the product details
+      security:
+        - tokenAuth: []
+      parameters:
+        - $ref: '#/x-parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+            example: {productName: Steve's Laptop, productDescription: core i9, price: 93000}
+      responses:
+        201:
+          description: SUCCESS
+          content:
+            application/json:
+              example: {message: the product's details updated successfully}
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+
+    delete:
+      tags:
+        - PRODUCTS
+      summary: Delete a product
+      description: Admin can delete a product from DB
+      security:
+        - tokenAuth: []
+      parameters:
+        - $ref: '#/x-parameters/id'
+      responses:
+        204:
+          description: DELETE successful
+          content:
+            application/json:
+              example: {message: Product deleted successfully}
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+
+  /cart:
+    get:
+      tags:
+        - CART
+      summary: Get items in your cart
+      description: Returns an array of all items in the cart of signed in user.
+      security:
+        - tokenAuth: []
+      responses:
+        200:
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/x-definitions/CartItems'
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+    post:
+      tags:
+        - CART
+      summary: Add an item to your cart
+      description: Adds item and its quantity to your cart. If item already in cart, the quantity is updated
+      security:
+        - tokenAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example: {productID: MacBook Pro M2 16", quantity: 3}
+      responses:
+        201:
+          description: SUCCESS
+          content:
+            application/json:
+              example: {message: cart item added}
+        204:
+          description: UPDATE SUCCESS
+          content:
+            application/json:
+              example: {message: cart item updated}
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+    delete:
+      tags:
+        - CART
+      summary: Clear cart
+      description: Removes all items from your cart
+      security:
+        - tokenAuth: []
+      responses:
+        204:
+          description: DELETED
+          content:
+            application/json:
+              example: {message: 'Your cart has been cleared.'}
+        401:
+          $ref: '#/x-responses/401Error'
+        500:
+          $ref: '#/x-responses/500Error'
+
+  /cart/{itemID}:
+    patch:
+      tags:
+        - CART
+      summary: Update cart item quantity
+      description: Updates the quantity of a cart item
+      security:
+        - tokenAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example: {quantity: 6}
+      responses:
+        204:
+          description: UPDATE SUCCESS
+          content:
+            application/json:
+              example: {message: cart item updated}
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+    delete:
+      tags:
+        - CART
+      summary: Delete cart item
+      description: Removes an item from your cart using the item id
+      parameters:
+        - name: itemID
+          in: path
+          schema:
+            type: string
+          description: cart item ID
+          required: true
+      security:
+        - tokenAuth: []
+      responses:
+        204:
+          description: DELETED
+          content:
+            application/json:
+              example: {message: 'Your cart has been cleared.'}
+        401:
+          $ref: '#/x-responses/401Error'
+        404:
+          $ref: '#/x-responses/404Error'
+        500:
+          $ref: '#/x-responses/500Error'
+          
+x-definitions:
   Users:
     type: array
     items:
       $ref: '#/components/schemas/User'
+  Products:
+    type: array
+    items:
+      $ref: '#/components/schemas/Product'
+  CartItems:
+    type: array
+    items:
+      $ref: '#/components/schemas/CartItem'
 
-parameters:
+x-parameters:
   token:
     name: token
     in: header
@@ -181,7 +500,7 @@ parameters:
     required: true
   email:
     name: email
-    in: path
+    in: query
     schema:
       type: string
     required: true
@@ -210,7 +529,30 @@ components:
           type: string
         password:
           type: string
-  responseSchemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        productName:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+    CartItem:
+      type: object
+      properties:
+        id:
+          type: string
+        productID:
+          type: string
+        quantity:
+          type: integer
+        userID:
+          type: string
+
+  x-responseSchemas:
     SignInResponse:
       type: object
       schema:
@@ -230,7 +572,7 @@ components:
           message:
             type: string
 
-responses:
+x-responses:
   500Error:
     description: SERVER ERROR
     content:
@@ -238,30 +580,49 @@ responses:
         schema:
           type: string
         example: 'An error occured'
+  400Error:
+    description: Bad Request
+    content:
+      application/json:
+        example: 'Bad Request from client'
   401Error:
     description: UNAUTHORIZED
     content:
       application/json:
         schema:
-          $ref: '#/components/responseSchemas/MessageResponse'
+          $ref: '#/components/x-responseSchemas/MessageResponse'
         example: {message: 'Unauthorized'}
   404Error:
     description: Not Found
     content:
       application/json:
         schema:
-          $ref: '#/components/responseSchemas/MessageResponse'
+          $ref: '#/components/x-responseSchemas/MessageResponse'
         example: {message: 'Not Found'}
 
 
-examples:
+x-examples:
   signinResponseExample:
-    example: {message: 'Signin successful', email: 'email@example.com', token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg4YTUzN2FhLWExYjItNGY5MC04OWI5LTRmMTcwZGRlNzNiZSIsIm5hbWUiOiJKb3NodWEgT25kaWVraSIsImVtYWlsIjoiYWRtaW5AYXBwLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY4NDI2NzY1OSwiZXhwIjoxNjg0MzEwODU5fQ.CQc98eMQ9loyzeu9kGsXprdzT0b8UMFq35iV9nl65fc'}
+    value:
+      message: Signin successful
+      email: email@example.com
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg4YTUzN2FhLWExYjItNGY5MC04OWI5LTRmMTcwZGRlNzNiZSIsIm5hbWUiOiJKb3NodWEgT25kaWVraSIsImVtYWlsIjoiYWRtaW5AYXBwLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY4NDI2NzY1OSwiZXhwIjoxNjg0MzEwODU5fQ.CQc98eMQ9loyzeu9kGsXprdzT0b8UMFq35iV9nl65fc
   editableUserInfoExample:
-    example: {firstname: 'Fname',lastname: 'Lname',email: 'email@example.com',password: '@1strongPass'}
+    value:
+      firstname: 'Fname'
+      lastname: 'Lname'
+      email: 'email@example.com'
+      password: '@1strongPass'
   userInfoExample:
-    example: {id: '1c3hu34', firstname: 'Fname',lastname: 'Lname',email: 'email@example.com', role: 'user',password: '@1strongPass'}
+    value:
+      id: '1c3hu34'
+      firstname: 'Fname'
+      lastname: 'Lname'
+      email: 'email@example.com'
+      role: 'user'
   signupSuccessMessageExample:
-    example: {message: 'User ${firstname} <${email}> has been registered successfully. Your ID is ${id}'}
+    value:
+      message: 'User ${firstname} <${email}> has been registered successfully. Your ID is ${id}'
   updateUserResponseExample:
-    example: {message: 'User ${firstname} <${email}> Updated Successfully'}
+    value:
+      message: 'User ${firstname} <${email}> Updated Successfully'
