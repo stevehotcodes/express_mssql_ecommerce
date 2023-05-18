@@ -13,6 +13,9 @@ import NodeMail from "../helpers/nodemailerHelper";
 
 dotenv.config({path:path.resolve(__dirname, '../../.env')});
 
+const APPHOST = process.env.APPHOST || 'http://localhost'
+const PORT = process.env.PORT || 4000
+
 const db = DatabaseHelper.getInstance()
 
 function filterSensitiveUserInfo(users:IUser[]) {
@@ -156,7 +159,8 @@ export const signIn= async (req:Request, res:Response)=>{
 export const forgotPassword:RequestHandler = async (req, res) => {
     // sends an email to the user to reset password
     try {
-        let link = 'http://localhost:4000/users/reset-password'
+
+        let link =  APPHOST + ':' + PORT + '/users/reset-password'
         const {email} = req.query as {email:string}
         if (!email) {
             return res.status(400).json({message: 'provide an email in the query'})
