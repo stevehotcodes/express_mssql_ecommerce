@@ -1,0 +1,8 @@
+CREATE OR ALTER PROCEDURE getOrderSales(
+@orderID VARCHAR(200)
+)
+AS
+BEGIN
+	SELECT * FROM sales
+	WHERE orderID=@orderID
+END
