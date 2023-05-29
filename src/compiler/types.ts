@@ -71,3 +71,29 @@ export interface IresetPasswordData {
     password:string
 
 }
+
+
+export interface Iproduct {
+    id:string
+    productName:string
+    productDescription:string
+    price:number
+    stockQuantity?:number
+    isDeleted?: 0 | 1
+    brand?:string
+    category?:number | null
+}
+
+export interface Iimage {
+    id?:number
+    imageURL:string
+    isMain?:0|1
+    productID:string
+}
+
+export interface Icategory {
+    id?:number
+    categoryName:string
+    categoryDescription?:string
+    superCategory?:number | null
+}

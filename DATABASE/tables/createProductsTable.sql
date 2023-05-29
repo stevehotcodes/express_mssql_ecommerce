@@ -1,9 +1,9 @@
 CREATE TABLE products(
 id VARCHAR(200) PRIMARY KEY,
 productName VARCHAR (200) NOT NULL,
-productDescription VARCHAR(200) NULL,
+productDescription VARCHAR(200) NOT NULL,
 price DECIMAL (10,2) NOT NULL,
-stockQuantity INT DEFAULT 0,
+stockQuantity INT DEFAULT 0 CHECK(stockQuantity >= 0),
 isDeleted INT DEFAULT 0,
 brand VARCHAR(200) DEFAULT NULL,
 category INT NULL FOREIGN KEY REFERENCES categories(id)
