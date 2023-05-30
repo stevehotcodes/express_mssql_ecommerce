@@ -1,11 +1,20 @@
 -- password: Password@123
 -- ids are uuids
 
+-- id VARCHAR(200) PRIMARY KEY,
+-- firstname VARCHAR(100) NOT NULL,
+-- lastname VARCHAR(100) NOT NULL,
+-- email VARCHAR(200) UNIQUE NOT NULL,
+-- role VARCHAR(100) DEFAULT 'user',
+-- isDeleted INT DEFAULT 0,
+-- password VARCHAR(200) NOT NULL
+
+
 
 INSERT INTO users (id, firstname, lastname, email, password)
 VALUES ('7111ad71-ba10-457d-8231-757611384342', 'Admin', 'Grabia', 'admin@app.com', '$2b$10$xerAO8Um2tQTgE0F59Xcxu8lmPDkhOvYJh/VXZRwQTn.dSI4RY2Cq');
 
-UPDATE users SET role='admin' WHERE email='admin@app.com';
+UPDATE users SET role='admin' WHERE email='admin@app.com'; -- set our admin
 
 INSERT INTO users (id, firstname, lastname, email, password)
 VALUES ('44864c7f-8c79-4277-98bb-e2449f16aaa2', 'Jane', 'Doe', 'jane@example.com', '$2b$10$xerAO8Um2tQTgE0F59Xcxu8lmPDkhOvYJh/VXZRwQTn.dSI4RY2Cq');
