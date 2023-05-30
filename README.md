@@ -34,6 +34,16 @@ PORT
 ```
 
 - Run `node DATABASE/setupdb` to setup the database
+- Run `node DATABASE/dummy` to add dummy data to your DB.
+
+An admin will be automatically added with credentials:
+
+```json
+{
+    "email": "admin@app.com",
+    "password": "Password@123"
+}
+```
 
 - Run `npm run dev` to start up the development server
 
