@@ -39,6 +39,22 @@ export const addUser = async (req:IaddUserRequest, res:Response)=>{
     }
 }
 
+export const getSignedInUser = async (req:IrequestInfo, res:Response) => {
+    try {
+        const filter_type:TfilterType = "id"
+        const id=req.info?.id as string
+
+        let user = await getUser(filter_type, id)
+
+        if(user){
+            return res.status(200).json(user)
+        }
+        return res.status(404).json({message:`User Not Found`})
+    } catch (error:any) {
+         return res.status(500).json({message: error.message}) //server side error
+    }
+}
+
 export const getAllUsers:RequestHandler = async (req,res)=>{
     try {
         let users:IUser[] = (await db.exec('getAllUsers')).recordset
@@ -144,7 +160,7 @@ export const signIn= async (req:Request, res:Response)=>{
         if(!user){ return res.status(404).json({message:"User not Found"}) }
 
         let validPassword = await bcrypt.compare(password,user.password)
-        if(!validPassword){ return res.status(404).json({message:`Incorrect credentials for <${email}>`}) }
+        if(!validPassword){ return res.status(401).json({message:`Incorrect credentials for <${email}>`}) }
     
         const name = user.firstname + ' ' + user.lastname
         const payload= {'id': user.id, name, 'email':user.email, 'role':user.role}
@@ -152,7 +168,7 @@ export const signIn= async (req:Request, res:Response)=>{
         res.status(200).json({message:'Signin successful', email,token})
 
     }
-    catch (error:any) { return res.status(500).json(error.message) }
+    catch (error:any) { return res.status(500).json({message: error.message}) }
 }
 
 
