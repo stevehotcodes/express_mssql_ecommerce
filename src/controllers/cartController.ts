@@ -25,18 +25,18 @@ export const getCart = async (req:IrequestInfo, res:Response)=> {
 export const addCartItem = async (req:IrequestInfo, res:Response)=> {
     try {
         const userID = req.info?.id!
-        const { productID, quantity } = req.body
+        const { productID } = req.body
         const cart:IcartItem[] = (await db.exec('getCart', {userID})).recordset
         let cartItem:IcartItem = cart.filter((item:IcartItem) =>{return item.userID==userID && item.productID == productID})[0]
 
         if (cartItem) {
-            await db.exec('updateCartItemQuantity', {id:cartItem.id,quantity})
-            return res.status(204).json({message: 'Cart item updated'})
+            await db.exec('updateCartItemQuantity', {id:cartItem.id, quantity:cartItem.quantity+1})
+            return res.status(204).json({message: 'Cart item quantity updated'})
         }
         else {
             const id = uid()
-            await db.exec('addCartItem', {id, userID, productID, quantity})
-            return res.status(201).json({message: 'Cart item added'})
+            await db.exec('addCartItem', {id, userID, productID})
+            return res.status(201).json({message: 'Item added to cart'})
         }
         
     } catch (error:any) {
