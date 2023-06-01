@@ -49,9 +49,16 @@ export const addProduct = async(req:Request, res:Response)=>{
    }
 }
 
-export const getAllProducts=async (req:Request, res:Response)=>{
+export const getProducts=async (req:Request, res:Response)=>{
   try{
-    let products:Iproduct[] = (await db.exec('getAllProducts')).recordset
+    const {category} = req.params
+
+    let products:Iproduct[] = category ? (await db.exec('getProductsByCategory', {category})).recordset : (await db.exec('getAllProducts')).recordset
+
+    if (!products.length) {
+      return res.status(404).json({message: 'No products found'})
+    }
+
     let images:Iimage[] = (await db.exec('getAllImages')).recordset
     let productsWithImages = products.map((product:Iproduct) => {
       let productImages = images.filter((image:Iimage) => {
