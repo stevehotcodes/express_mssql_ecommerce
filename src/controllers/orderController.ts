@@ -67,7 +67,7 @@ export const cancelOrderById =async (req:IrequestInfo, res:Response) => {
 
     await db.exec('cancelOrderById',{id})
 
-    return res.status(204).json({message:"order canceled"})
+    return res.status(200).json({message:"order canceled"})
 
   }
   catch(error:any){
