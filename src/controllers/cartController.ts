@@ -3,7 +3,7 @@ import {v4 as uid} from 'uuid'
 import DatabaseHelper from "../helpers/databaseHelper";
 import dotenv from 'dotenv';
 import path from 'path';
-import { IcartItem, IrequestInfo } from "../compiler/types";
+import { IcartItem, IcartItemWithInfo, IrequestInfo } from "../compiler/types";
 
 
 dotenv.config({path:path.resolve(__dirname, '../../.env')});
@@ -26,8 +26,8 @@ export const addCartItem = async (req:IrequestInfo, res:Response)=> {
     try {
         const userID = req.info?.id!
         const { productID } = req.body
-        const cart:IcartItem[] = (await db.exec('getCart', {userID})).recordset
-        let cartItem:IcartItem = cart.filter((item:IcartItem) =>{return item.userID==userID && item.productID == productID})[0]
+        const cart:IcartItemWithInfo[] = (await db.exec('getCart', {userID})).recordset
+        let cartItem:IcartItemWithInfo = cart.filter((item:IcartItemWithInfo) =>{return item.userID==userID && item.productID == productID})[0]
 
         if (cartItem) {
             await db.exec('updateCartItemQuantity', {id:cartItem.id, quantity:cartItem.quantity+1})
@@ -48,8 +48,8 @@ export const deleteCartItem = async (req:IrequestInfo, res:Response)=> {
     try {
         const userID = req.info?.id!
         const {itemID} = req.params
-        const cart:IcartItem[] = (await db.exec('getCart', {userID})).recordset
-        let cartItem:IcartItem = cart.filter((item:IcartItem) =>{return item.id==itemID })[0]
+        const cart:IcartItemWithInfo[] = (await db.exec('getCart', {userID})).recordset
+        let cartItem:IcartItemWithInfo = cart.filter((item:IcartItemWithInfo) =>{return item.id==itemID })[0]
         if (cartItem) {
             await db.exec('deleteCartItem', {id:itemID})
             return res.status(200).json({message: 'Cart item deleted.'})
@@ -78,8 +78,8 @@ export const updateCartItemQuantity = async (req:IrequestInfo, res:Response)=> {
         const userID = req.info?.id!
         const {quantity} = req.body
         const id = req.params.itemID
-        const cart:IcartItem[] = (await db.exec('getCart', {userID})).recordset
-        let cartItem:IcartItem = cart.filter((item:IcartItem) =>{return item.id==id })[0]
+        const cart:IcartItemWithInfo[] = (await db.exec('getCart', {userID})).recordset
+        let cartItem:IcartItemWithInfo = cart.filter((item:IcartItemWithInfo) =>{return item.id==id })[0]
         if (cartItem) {
             await db.exec('updateCartItemQuantity', {id:cartItem.id,quantity})
             return res.status(200).json({message: 'Cart item updated'})

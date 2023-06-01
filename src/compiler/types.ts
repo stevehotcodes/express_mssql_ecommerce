@@ -49,10 +49,15 @@ export interface Iitem {
 
 
 export interface IcartItem  extends Iitem{
-
     userID:string
-    
 }
+
+export interface IcartItemWithInfo extends IcartItem {
+    productName:string
+    price:number
+    imageURL:string | null
+}
+
 export interface IsalesItem extends Iitem{
     price:number
     orderID:string
