@@ -102,3 +102,22 @@ export interface Icategory {
     categoryDescription?:string
     superCategory?:number | null
 }
+
+
+export interface IorderWithInfo {
+    id:string
+    userID:string
+    status: Tstatus
+    orderDate:string
+    items:IorderItemInfo[]
+}
+
+export interface IorderItemInfo {
+    productID:string
+    quantity:number
+    productName:string
+    price:number
+    imageURL:string
+}
+
+export type Tstatus = 'processing' | 'shipping' | 'shipped' | 'canceled'

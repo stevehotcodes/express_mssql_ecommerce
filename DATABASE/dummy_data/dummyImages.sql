@@ -63,7 +63,7 @@ VALUES
 ('https://m.media-amazon.com/images/I/31EMHG79KCL._SR600%2C315_PIWhiteStrip%2CBottomLeft%2C0%2C35_PIStarRatingFOUR%2CBottomLeft%2C360%2C-6_SR600%2C315_SCLZZZZZZZ_FMpng_BG255%2C255%2C255.jpg', '12b6a671-0e43-4327-8f15-78239e89105b6', 1),
 ('https://m.media-amazon.com/images/I/61g+WG+SHeL._SL1500_.jpg', '68ebe440-6fc5-4772-938d-42c05dd3cfc5', 1),
 ('https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/71ZchUs5n1L._SL1500_.jpg', 'ddb5af6a-d5d3-4eaf-b42a-65efcc7b3a8e', 1),
-('https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/81/634565/1.jpg?6343', '6fb20b96-1a52-41de-924b-37c58e67e797', 1),
+('https://i5.walmartimages.com/asr/c341aa1f-70eb-4498-bca0-5e6e07872b0a.4edbeed44b22a23647317a2d92c52ca0.jpeg', '6fb20b96-1a52-41de-924b-37c58e67e797', 1),
 ('https://i.ibb.co/JsKLzmC/IMAGE-1671683180.webp', '2ad6b35c-0c5a-4a40-b0e4-55ff69789d1d', 1),
 ('https://jcpchub.com/wp-content/uploads/2020/08/keytecg-k-516-led-rgb-gaming-keyboard-mouse-combo-plain-1-1.jpg', '19c89c37-5e18-421e-933f-c0eb7bbdca91', 1),
 ('https://www.zdnet.com/a/img/resize/3d3b60ed78e598e2c3deea37c4baf76bf93ac475/2022/07/15/84f276ba-20b0-4882-b007-8bcebe04f381/smartthings1.jpg?auto=webp&fit=crop&height=900&width=1200', '2c5b3d50-4b0c-4176-8d7c-1350f8a5f142', 1),
