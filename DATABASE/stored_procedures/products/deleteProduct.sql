@@ -3,7 +3,7 @@ CREATE OR ALTER PROCEDURE deleteProduct(
 )
 AS
 BEGIN
-DELETE FROM products WHERE id=@id
+UPDATE products SET isDeleted=1 WHERE id=@id AND isDeleted=0
 
 END
  

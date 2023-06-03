@@ -1,7 +1,7 @@
 CREATE OR ALTER PROCEDURE addCartItem(
 @id VARCHAR(200),
 @productID VARCHAR(200),
-@quantity INT,
+@quantity INT = 1,
 @userID VARCHAR(200)
 )
 AS

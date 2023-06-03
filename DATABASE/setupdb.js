@@ -28,7 +28,9 @@ async function executeTableSqlFiles() {
         const tableFiles = [
             'tables/dropTables.sql',
             'tables/createUserTable.sql',
+            'tables/createCategoriesTable.sql',
             'tables/createProductsTable.sql',
+            'tables/createImagesTable.sql',
             'tables/createOrdersTable.sql',
             'tables/createCartTable.sql',
             'tables/createSalesTable.sql']
@@ -71,6 +73,30 @@ async function executeSpSqlFiles(spFolderPath) {
     }
 }
 
+async function executeTriggersSqlFiles(triggersFolderPath) {
+    try {
+        const pool = await sql.connect(config)
+        const spFiles = fs.readdirSync(triggersFolderPath)
+        for (const file of spFiles) {
+            const filePath = path.join(triggersFolderPath, file)
+            const stats = fs.statSync(filePath);
+            if (stats.isDirectory()) {
+                await executeSpSqlFiles(filePath);
+            } else if (path.extname(file) === '.sql') {
+                const sql = fs.readFileSync(filePath, 'utf8')
+                await pool.request().query(sql);
+                console.log(`   ✔️ ${filePath} executed successfully`)
+            }
+        }
+        console.log('')
+        console.log(`✔️ All SQL files in ${triggersFolderPath} executed successfully ✔️`)
+        console.log('');
+        pool.close()
+    } catch (err) {
+        console.error(err)
+    }
+}
+
 
 async function execute(){
     console.log('---------------------');
@@ -81,6 +107,11 @@ async function execute(){
     console.log('executing stored procedures...');
     console.log('');
     await executeSpSqlFiles(path.join(__dirname, 'stored_procedures'))
+    console.log('');
+    console.log('---------------------');
+    console.log('executing triggers...');
+    console.log('');
+    await executeTriggersSqlFiles(path.join(__dirname, 'triggers'))
 }
 
 execute()

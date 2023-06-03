@@ -49,10 +49,15 @@ export interface Iitem {
 
 
 export interface IcartItem  extends Iitem{
-
     userID:string
-    
 }
+
+export interface IcartItemWithInfo extends IcartItem {
+    productName:string
+    price:number
+    imageURL:string | null
+}
+
 export interface IsalesItem extends Iitem{
     price:number
     orderID:string
@@ -71,3 +76,48 @@ export interface IresetPasswordData {
     password:string
 
 }
+
+
+export interface Iproduct {
+    id:string
+    productName:string
+    productDescription:string
+    price:number
+    stockQuantity?:number
+    isDeleted?: 0 | 1
+    brand?:string
+    category?:number | null
+}
+
+export interface Iimage {
+    id?:number
+    imageURL:string
+    isMain?:0|1
+    productID:string
+}
+
+export interface Icategory {
+    id?:number
+    categoryName:string
+    categoryDescription?:string
+    superCategory?:number | null
+}
+
+
+export interface IorderWithInfo {
+    id:string
+    userID:string
+    status: Tstatus
+    orderDate:string
+    items:IorderItemInfo[]
+}
+
+export interface IorderItemInfo {
+    productID:string
+    quantity:number
+    productName:string
+    price:number
+    imageURL:string
+}
+
+export type Tstatus = 'processing' | 'shipping' | 'shipped' | 'canceled'

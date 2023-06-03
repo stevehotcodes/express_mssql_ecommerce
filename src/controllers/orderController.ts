@@ -3,7 +3,7 @@ import {v4 as uid} from 'uuid'
 import DatabaseHelper from "../helpers/databaseHelper";
 import dotenv from 'dotenv';
 import path from 'path';
-import { IcartItem, IrequestInfo, IsalesItem } from "../compiler/types";
+import { IcartItem, IcartItemWithInfo, IorderItemInfo, IorderWithInfo, IrequestInfo, IsalesItem, Tstatus } from "../compiler/types";
 
 
 dotenv.config({path:path.resolve(__dirname, '../../.env')});
@@ -15,7 +15,7 @@ export  const  createNewOrder = async (req:IrequestInfo, res:Response)=>{
       try {
         const userID=req.info?.id!
         const orderID=uid();
-        const cart:IcartItem[]= (await db.exec('getCart',{userID})).recordset
+        const cart:IcartItemWithInfo[]= (await db.exec('getCart',{userID})).recordset
        
        //verifying cart content if cart is empty dont make order
         if (!cart.length) {
@@ -24,19 +24,17 @@ export  const  createNewOrder = async (req:IrequestInfo, res:Response)=>{
         //if cart not empty proceed to make an order
         
         
-        await db.exec('createOrder',{"id":orderID,userID});
+        await db.exec('createOrder',{id:orderID,userID});
         let orderTotal = 0
+
         //move cart items to sales 
-        // await (await cart.forEach(async(item:IcartItem)=>
-        
         for(const item of cart){
-          const{userID,id,...rest}=item
-          const price=await(await db.exec("getProduct",{id:item.productID})).recordset[0].price
-          orderTotal += price
-          
-          const saleId=uid()
-          await db.exec('addSalesItem',{...rest,price,orderID,id:saleId})
+          orderTotal += item.price
+          const saleId = uid()
+          await db.exec('addSalesItem',{productID:item.productID,quantity:item.quantity,price:item.price,orderID,id:saleId})
         }
+
+        await db.exec('clearCart', {userID})
         
         return res.status(201).json({
           message:"order created successfully",
@@ -67,7 +65,7 @@ export const cancelOrderById =async (req:IrequestInfo, res:Response) => {
 
     await db.exec('cancelOrderById',{id})
 
-    return res.status(204).json({message:"order canceled"})
+    return res.status(200).json({message:"order canceled"})
 
   }
   catch(error:any){
@@ -83,29 +81,35 @@ export const getOrdersByUser= async(req:IrequestInfo,res:Response)=>{
       return res.status(404).json({message:"orders not found"})
   }
   catch(error:any){
-       return res.status(500).json(error.message)
+       return res.status(500).json({message: error.message})
   }
 }
 
 export const getAnOrderById =async (req:IrequestInfo,res:Response)=>{
   try{
       const {id} = req.params
-      const order =(await db.exec('getAnOrderById', { id })).recordset[0]
+      const orderItems =(await db.exec('getAnOrderById', { id })).recordset
 
-      if (!order) {
+      if (!orderItems.length) {
         return res.status(404).json({message:"order not found"})
       }
-      if (req.info?.id == order.userID || req.info?.role == 'admin') {
-        const orderSales = (await db.exec('getOrderSales', {orderID: id})).recordset
-        let orderInfo = {...order, items: orderSales}
-        return res.status(200).json(orderInfo)
+
+      if (req.info?.id == orderItems[0].userID || req.info?.role == 'admin') {
+        // const orderSales = (await db.exec('getOrderSales', {orderID: id})).recordset
+        let orderWithInfo:Partial<IorderWithInfo> = {id:orderItems[0].id as string, status: orderItems[0].status as Tstatus, userID: orderItems[0].userID as string, orderDate:orderItems[0].orderDate as string}
+        let orderItemsWithInfo:IorderItemInfo[] = orderItems.map((item) => {
+          const {orderID, status, userID, orderDate, ...rest} = item
+          return rest
+        })
+        orderWithInfo['items'] = orderItemsWithInfo
+        return res.status(200).json(orderWithInfo)
         
       }
       return res.status(401).json({message: 'Unauthorized'})
       
   }
   catch(error:any){
-         return res.status(500).json(error.message)
+         return res.status(500).json({message: error.message})
   }
 }
 

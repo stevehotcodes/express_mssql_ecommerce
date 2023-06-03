@@ -1,0 +1,7 @@
+CREATE OR ALTER PROCEDURE deleteImage(
+@id INT
+)
+AS
+BEGIN
+DELETE FROM images WHERE id=@id
+END
