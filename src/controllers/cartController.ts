@@ -3,7 +3,7 @@ import {v4 as uid} from 'uuid'
 import DatabaseHelper from "../helpers/databaseHelper";
 import dotenv from 'dotenv';
 import path from 'path';
-import { IcartItem, IrequestInfo } from "../compiler/types";
+import { IcartItem, IcartItemWithInfo, IrequestInfo } from "../compiler/types";
 
 
 dotenv.config({path:path.resolve(__dirname, '../../.env')});
@@ -25,18 +25,18 @@ export const getCart = async (req:IrequestInfo, res:Response)=> {
 export const addCartItem = async (req:IrequestInfo, res:Response)=> {
     try {
         const userID = req.info?.id!
-        const { productID, quantity } = req.body
-        const cart:IcartItem[] = (await db.exec('getCart', {userID})).recordset
-        let cartItem:IcartItem = cart.filter((item:IcartItem) =>{return item.userID==userID && item.productID == productID})[0]
+        const { productID } = req.body
+        const cart:IcartItemWithInfo[] = (await db.exec('getCart', {userID})).recordset
+        let cartItem:IcartItemWithInfo = cart.filter((item:IcartItemWithInfo) =>{return item.userID==userID && item.productID == productID})[0]
 
         if (cartItem) {
-            await db.exec('updateCartItemQuantity', {id:cartItem.id,quantity})
-            return res.status(204).json({message: 'Cart item updated'})
+            await db.exec('updateCartItemQuantity', {id:cartItem.id, quantity:cartItem.quantity+1})
+            return res.status(200).json({message: 'Cart item quantity updated'})
         }
         else {
             const id = uid()
-            await db.exec('addCartItem', {id, userID, productID, quantity})
-            return res.status(201).json({message: 'Cart item added'})
+            await db.exec('addCartItem', {id, userID, productID})
+            return res.status(201).json({message: 'Item added to cart'})
         }
         
     } catch (error:any) {
@@ -48,11 +48,11 @@ export const deleteCartItem = async (req:IrequestInfo, res:Response)=> {
     try {
         const userID = req.info?.id!
         const {itemID} = req.params
-        const cart:IcartItem[] = (await db.exec('getCart', {userID})).recordset
-        let cartItem:IcartItem = cart.filter((item:IcartItem) =>{return item.id==itemID })[0]
+        const cart:IcartItemWithInfo[] = (await db.exec('getCart', {userID})).recordset
+        let cartItem:IcartItemWithInfo = cart.filter((item:IcartItemWithInfo) =>{return item.id==itemID })[0]
         if (cartItem) {
             await db.exec('deleteCartItem', {id:itemID})
-            return res.status(204).json({message: 'Cart item deleted.'})
+            return res.status(200).json({message: 'Cart item deleted.'})
         }
         else {
             return res.status(404).json({message: 'Item not in cart.'})
@@ -66,7 +66,7 @@ export const clearCart = async (req:IrequestInfo, res:Response)=> {
     try {
         const userID = req.info?.id!
         await db.exec('clearCart', {userID})
-        return res.status(204).json({message: 'Your cart has been cleared.'})
+        return res.status(200).json({message: 'Your cart has been cleared.'})
         
     } catch (error:any) {
         return res.status(500).json({message: error.message})
@@ -78,11 +78,11 @@ export const updateCartItemQuantity = async (req:IrequestInfo, res:Response)=> {
         const userID = req.info?.id!
         const {quantity} = req.body
         const id = req.params.itemID
-        const cart:IcartItem[] = (await db.exec('getCart', {userID})).recordset
-        let cartItem:IcartItem = cart.filter((item:IcartItem) =>{return item.id==id })[0]
+        const cart:IcartItemWithInfo[] = (await db.exec('getCart', {userID})).recordset
+        let cartItem:IcartItemWithInfo = cart.filter((item:IcartItemWithInfo) =>{return item.id==id })[0]
         if (cartItem) {
             await db.exec('updateCartItemQuantity', {id:cartItem.id,quantity})
-            return res.status(204).json({message: 'Cart item updated'})
+            return res.status(200).json({message: 'Cart item updated'})
         }
         else {
             return res.status(404).json({message: 'Item not in cart.'})
